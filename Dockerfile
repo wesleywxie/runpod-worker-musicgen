@@ -20,7 +20,7 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-$(uname -m)
 RUN bash ./Miniconda3-latest-Linux-$(uname -m).sh -b \
     && rm -rf ./Miniconda3-latest-Linux-$(uname -m).sh
 
-ENV PATH /app/miniconda3/bin/:$PATH
+ENV PATH=/app/miniconda3/bin/:$PATH
 
 RUN conda install python="3.10" -y
 

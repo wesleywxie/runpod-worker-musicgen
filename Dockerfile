@@ -27,7 +27,7 @@ RUN conda install python="3.10" -y
 ADD . /app
 WORKDIR /app
 
-RUN chmod +x /app/start.sh
+RUN sudo chmod +x /app/start.sh
 RUN pip install -r requirements.txt
 RUN python3 /app/downloader.py
 

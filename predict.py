@@ -1,4 +1,3 @@
-import logging
 import os
 import tempfile
 import uuid
@@ -11,10 +10,6 @@ from audiocraft.models import musicgen
 from pydub import AudioSegment
 
 from utils import is_valid_url
-
-# Configure logging for the module
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 def generate_melody(
@@ -83,7 +78,7 @@ def generate_melody(
     try:
         os.remove(str(wav_filename))
     except OSError as e:
-        logger.warning(f"Unable to remove temporary file {wav_filename}: {e}")
+        print(f"Unable to remove temporary file {wav_filename}: {e}")
 
     return str(mp3_filename)
 
@@ -109,6 +104,6 @@ def load_audio_from_url(url: str):
             try:
                 os.remove(tmp_file_path)
             except OSError as e:
-                logger.warning(f"Failed to delete temporary file {tmp_file_path}: {e}")
+                print(f"Failed to delete temporary file {tmp_file_path}: {e}")
     assert waveform is not None and sample_rate is not None, "Failed to load audio from URL"
     return waveform, sample_rate

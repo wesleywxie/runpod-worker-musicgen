@@ -1,6 +1,5 @@
 import base64
 import json
-import logging
 import os
 from pathlib import Path
 from typing import Dict
@@ -9,8 +8,6 @@ import runpod
 
 from predict import generate_melody
 from utils import is_valid_url
-
-logger = logging.getLogger(__name__)
 
 REFRESH_WORKER = os.environ.get("REFRESH_WORKER", "false").lower() == "true"
 
@@ -76,7 +73,7 @@ def process_output_mp3(mp3_filename: str) -> Dict[str, str]:
     """
     file_path = Path(mp3_filename)
     if not file_path.exists() or not file_path.is_file():
-        logger.error(f"MP3 file does not exist: {mp3_filename}")
+        print(f"musicgen-worker - error: MP3 file does not exist: {mp3_filename}")
         return {
             "status": "error",
             "message": f"the mp3 does not exist in the specified output folder: {mp3_filename}"
@@ -86,7 +83,7 @@ def process_output_mp3(mp3_filename: str) -> Dict[str, str]:
         mp3_bytes = file_path.read_bytes()
         encoded_content = base64.b64encode(mp3_bytes).decode("utf-8")
     except Exception as e:
-        logger.exception(f"Error reading or encoding MP3 file {mp3_filename}: {e}")
+        print(f"musicgen-worker - Error reading or encoding MP3 file {mp3_filename}: {e}")
         return {
             "status": "error",
             "message": f"Failed to read and encode MP3: {str(e)}"
@@ -94,9 +91,9 @@ def process_output_mp3(mp3_filename: str) -> Dict[str, str]:
 
     try:
         file_path.unlink()  # delete the file
-        logger.info("musicgen-worker - the mp3 was generated, converted to base64, and deleted")
+        print("musicgen-worker - the mp3 was generated, converted to base64, and deleted")
     except Exception as e:
-        logger.exception(f"Error deleting MP3 file {mp3_filename}: {e}")
+        print(f"musicgen-worker - Error deleting MP3 file {mp3_filename}: {e}")
         # Optionally, you might still return success with a warning, or treat this as an error.
         return {
             "status": "warning",
@@ -124,7 +121,7 @@ def handler(job):
     # Queue the workflow
     try:
         mp3_filename = generate_melody(prompt, duration, sample)
-        logger.info(f"musicgen-worker - generated mp3 file - {mp3_filename}")
+        print(f"musicgen-worker - generated mp3 file - {mp3_filename}")
         mp3_result = process_output_mp3(mp3_filename)
     except Exception as e:
         return {"error": f"Error generating mp3: {str(e)}"}

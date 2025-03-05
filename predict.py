@@ -84,7 +84,8 @@ def generate_melody(
 
 
 def load_audio_from_url(url: str):
-    response = requests.get(url)
+    headers = {'User-Agent': 'nfp-bot'}
+    response = requests.get(url, headers=headers)
     response.raise_for_status()  # Raise an error if the download failed
 
     tmp_file_path = None
